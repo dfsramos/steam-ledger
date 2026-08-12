@@ -30,6 +30,16 @@ jobs:
         with:
           workspaces: src-tauri
 
+      # Compiling this crate at all — even just for `cargo test` — pulls in
+      # Tauri's GTK/WebKitGTK Linux bindings, which need these system dev
+      # packages present at build time. ubuntu-latest doesn't have them by
+      # default (confirmed live: the first run of this workflow failed on
+      # `glib-2.0`/`gobject-2.0`/`gio-2.0` not found via pkg-config).
+      - name: Install Tauri Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev libssl-dev
+
       - name: Install frontend dependencies
         run: npm ci
 
