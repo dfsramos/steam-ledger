@@ -80,7 +80,7 @@ export function render() {
             <div style="font-family:'IBM Plex Mono', monospace; font-size:24px; font-weight:600; margin-top:4px; letter-spacing:-0.01em;">${vaultValue}</div>
             <div style="font-family:'IBM Plex Mono', monospace; font-size:14px; margin-top:2px; color:${vaultPnlColor};">${vaultPnl}</div>
           </div>
-          <div style="padding:10px 14px 2px; font-family:'IBM Plex Mono', monospace; font-size:12px; color:#4e565c;">v0.4.2 · ${itemCount} items</div>
+          <div style="padding:10px 14px 2px; font-family:'IBM Plex Mono', monospace; font-size:12px; color:#4e565c;">v0.1.0 · ${itemCount} items</div>
         </div>
 
         <div id="screen-root" style="flex:1; min-width:0; display:flex; flex-direction:column; background:#0c0e10;"></div>
