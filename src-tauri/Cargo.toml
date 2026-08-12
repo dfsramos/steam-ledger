@@ -1,0 +1,50 @@
+[package]
+name = "steam-ledger"
+version = "0.1.0"
+description = "Local-first game skin portfolio tracker"
+authors = ["Daniel Ramos"]
+edition = "2021"
+# Without this, `cargo run` refuses to pick between `steam-ledger` and the
+# `steam_import_debug` diagnostic bin, and — confirmed directly during local
+# cross-compilation — `tauri build`'s own bundler picks the same ambiguous
+# default and can end up packaging the DEBUG tool as the shipped installer
+# instead of the real app. Must stay correct for CI release builds, not just
+# local dev convenience.
+default-run = "steam-ledger"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "steam_ledger_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+dirs = "5"
+regex = "1"
+# gzip: confirmed live that Steam sends compressed bodies for at least some
+# error responses; without this feature reqwest neither requests nor decodes
+# gzip, so such bodies decode as garbled bytes instead of an error message.
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "gzip"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+# keyring has NO default backend — without an explicit platform feature it
+# silently falls back to an in-memory-per-call `mock` store on every OS
+# (confirmed by reading keyring-3.6.3's src/lib.rs directly), which accepts
+# writes and immediately loses them. windows-native = real Credential
+# Manager, apple-native = real Keychain, sync-secret-service = real Linux
+# Secret Service (crypto-rust = pure-Rust crypto backend for its D-Bus
+# session, avoiding an OpenSSL toolchain dependency on cross-compiled
+# targets).
+keyring = { version = "3", features = ["windows-native", "apple-native", "sync-secret-service", "crypto-rust"] }
+scraper = "0.20"
+

@@ -1,0 +1,26 @@
+html, body { margin: 0; padding: 0; background: #0c0e10; }
+* { box-sizing: border-box; }
+
+a { color: #d98a52; text-decoration: none; }
+a:hover { color: #eda56f; }
+
+input, textarea, select, button { font-family: inherit; }
+input:focus, textarea:focus { outline: 1px solid #d98a52; }
+
+::selection { background: #d98a52; color: #0c0e10; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #2a3036; border: 2px solid #0c0e10; border-radius: 6px; }
+::-webkit-scrollbar-track { background: #0c0e10; }
+
+/* Reusable hover treatments (ported from the design's style-hover="..." bindings).
+   Applied as classes on generated DOM nodes rather than inline mouseenter/mouseleave. */
+.sl-nav-item:hover { background: #1b1f23; }
+.sl-btn-ghost:hover { border-color: #3d454c; color: #e3e7ea; }
+.sl-btn-accent:hover { background: #eda56f; }
+.sl-btn-danger:hover { background: #1e1414; }
+.sl-btn-positive:hover { background: #83d9a0; }
+.sl-col-sort:hover { color: #b9c1c7; }
+.sl-table-row:hover { background: #14181b; }
+.sl-filter-btn:hover { border-color: #3d454c; }
+.sl-suggest-row:hover { background: #1b1f23; }

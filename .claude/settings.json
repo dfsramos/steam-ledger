@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(DISPLAY=:0 import -window *)",
+      "Bash(DISPLAY=:0 xwininfo *)",
+      "Bash(cargo test *)",
+      "Bash(cargo check *)",
+      "Bash(npx vitest run *)",
+      "Bash(npx vite build *)"
+    ]
+  }
+}

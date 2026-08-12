@@ -1,0 +1,58 @@
+name: Release (Windows)
+
+# Windows-only release build. Runs on a real windows-latest GitHub runner —
+# not a cross-compile — since building the NSIS/MSI installer needs a real
+# Windows toolchain (makensis specifically; cross-compiling from Linux with
+# Wine doesn't work, confirmed the hard way during local development).
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build and release (e.g. v0.1.0). Must already exist."
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build and release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          releaseName: "Steam Ledger ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
+          releaseBody: "See the assets below to download the Windows installer."
+          # Draft so a broken/untested build never reaches users
+          # automatically — review the generated release and hit "Publish"
+          # yourself once you've smoke-tested the installer.
+          releaseDraft: true
+          prerelease: false

@@ -1,0 +1,44 @@
+name: CI
+
+# Fast correctness check on every push/PR — separate from release.yml
+# (Windows-only installer builds). Runs on ubuntu-latest since this only
+# exercises cross-platform logic (parsing, reconciliation, currency math,
+# etc.), not the Windows packaging step.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Frontend build
+        run: npm run build
+
+      - name: Frontend tests
+        run: npx vitest run
+
+      - name: Rust tests
+        working-directory: src-tauri
+        run: cargo test --lib

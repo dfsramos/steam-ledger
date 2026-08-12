@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Steam Ledger — track your Steam skin portfolio, locally</title>
+<meta name="description" content="A local-first desktop app for tracking your Steam game skin/item portfolio: what you paid, what it's worth now, and your realised profit and loss over time." />
+<style>
+  :root {
+    --bg: #0c0e10;
+    --panel: #101315;
+    --panel-2: #15181b;
+    --border: #23282d;
+    --border-2: #2b3137;
+    --text: #e3e7ea;
+    --text-dim: #b9c1c7;
+    --text-mute: #7d868f;
+    --text-mute-2: #5d666d;
+    --accent: #d98a52;
+    --accent-bg: #241a10;
+    --green: #69c98a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.55;
+  }
+
+  code, .mono {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  header.hero {
+    padding: 96px 0 64px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .titlebar-dots {
+    display: flex;
+    gap: 7px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .titlebar-dots span {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--border-2);
+    display: inline-block;
+  }
+
+  h1 {
+    font-size: 44px;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+  }
+
+  .tagline {
+    font-size: 19px;
+    color: var(--text-mute);
+    max-width: 560px;
+    margin: 0 auto 36px;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 26px;
+    background: var(--accent);
+    color: #0c0e10;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 6px;
+    text-decoration: none;
+  }
+  .cta:hover { text-decoration: none; filter: brightness(1.06); }
+
+  .cta-note {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--text-mute-2);
+  }
+  .cta-note a { color: var(--text-mute); text-decoration: underline; }
+
+  section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--text-mute-2);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 32px;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 640px) { .features { grid-template-columns: 1fr; } }
+
+  .feature {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 22px;
+  }
+  .feature h3 {
+    font-size: 16px;
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .feature p {
+    margin: 0;
+    color: var(--text-mute);
+    font-size: 14.5px;
+  }
+
+  .privacy-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 26px;
+    font-size: 15px;
+    color: var(--text-dim);
+  }
+  .privacy-box strong { color: var(--text); }
+  .privacy-box .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+    margin-right: 8px;
+  }
+  .privacy-list { list-style: none; margin: 14px 0 0; padding: 0; }
+  .privacy-list li { margin-bottom: 10px; }
+
+  pre {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  footer {
+    padding: 40px 0 60px;
+    text-align: center;
+    color: var(--text-mute-2);
+    font-size: 13.5px;
+  }
+  footer a { color: var(--text-mute); text-decoration: underline; }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="titlebar-dots"><span></span><span></span><span></span></div>
+      <h1>Steam Ledger</h1>
+      <p class="tagline">Track what you paid for your Steam game skins, what they're worth now, and your profit and loss over time — entirely on your own machine.</p>
+      <a class="cta" href="https://github.com/dfsramos/steam-ledger/releases/latest">Download for Windows</a>
+      <div class="cta-note">Free and open source · <a href="https://github.com/dfsramos/steam-ledger">View on GitHub</a></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Features</div>
+      <h2>What it does</h2>
+      <div class="features">
+        <div class="feature">
+          <h3>Portfolio dashboard</h3>
+          <p>Every item you own, current market value, P/L per item and overall — sortable and filterable by game.</p>
+        </div>
+        <div class="feature">
+          <h3>Real Steam import</h3>
+          <p>Pulls your actual Community Market history and current inventory, reconciles the two, and fills in prices from Store purchases and pack receipts.</p>
+        </div>
+        <div class="feature">
+          <h3>One-click account connect</h3>
+          <p>A real Steam login window opens inside the app and picks up your session automatically — no digging through browser devtools.</p>
+        </div>
+        <div class="feature">
+          <h3>Live market prices</h3>
+          <p>Refresh current values from the Steam Community Market on demand, per item or for your whole portfolio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Privacy</div>
+      <h2>Local-first, by design</h2>
+      <div class="privacy-box">
+        <p><span class="dot"></span><strong>Nothing leaves your machine except requests to Steam itself.</strong></p>
+        <ul class="privacy-list">
+          <li>Your portfolio is a SQLite file at <code>~/.steamledger/vault.db</code> — no account, no cloud sync, no telemetry.</li>
+          <li>Your Steam session cookie is stored via your OS's native credential store (Windows Credential Manager), never in the app's database or a plain file.</li>
+          <li>It's only ever sent directly to Steam's own servers, the same way your browser already does.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Get started</div>
+      <h2>Building from source</h2>
+      <p style="color: var(--text-mute); margin-top: -16px; margin-bottom: 20px;">Prerequisites: <a href="https://nodejs.org/">Node.js</a> 18+, <a href="https://rustup.rs/">Rust</a>, and the <a href="https://v2.tauri.app/start/prerequisites/">Tauri v2 prerequisites</a> for your OS.</p>
+<pre>git clone https://github.com/dfsramos/steam-ledger.git
+cd steam-ledger
+npm install
+npm run tauri dev</pre>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      MIT licensed · <a href="https://github.com/dfsramos/steam-ledger">github.com/dfsramos/steam-ledger</a>
+    </div>
+  </footer>
+
+</body>
+</html>
